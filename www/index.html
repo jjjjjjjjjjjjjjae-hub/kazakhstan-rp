@@ -4,127 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>KAZAKHSTAN RP</title>
-    <script src="12=88.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
-            overflow: hidden; background: #000; font-family: 'Montserrat', sans-serif; 
-        }
-
-        /* Background */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
+        
         #bg { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background-size: cover; background-position: center; z-index: -1;
-            filter: brightness(0.8);
+            background: url('фото.png') no-repeat center center;
+            background-size: cover; z-index: -1; 
         }
 
-        /* Сол жақ үстіңгі панель */
-        .top-left {
+        #canvas-3d { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+        .interface {
+            position: absolute; width: 100%; height: 100%; z-index: 10;
+        }
+
+        .auth-box {
             position: absolute; top: 40px; left: 50px;
-            animation: slideInLeft 0.8s ease-out;
         }
-        @keyframes slideInLeft {
-            from { transform: translateX(-50px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+
+        .label { 
+            color: #00bfff; font-size: 14px; font-weight: 900; 
+            letter-spacing: 2px; text-transform: uppercase;
+            margin-bottom: 10px; border-left: 4px solid #00bfff; padding-left: 10px;
         }
-        .ui-label { 
-            color: #00bfff; font-size: 12px; font-weight: 800; 
-            letter-spacing: 3px; margin-bottom: 10px; text-transform: uppercase;
-            display: flex; align-items: center;
-        }
-        .ui-label::before {
-            content: ''; display: inline-block; width: 4px; height: 15px; 
-            background: #00bfff; margin-right: 10px;
-        }
+
         input { 
-            width: 320px; padding: 18px; background: rgba(0,0,0,0.6); 
-            border: 1px solid rgba(0, 191, 255, 0.3); border-radius: 2px;
-            color: #fff; font-size: 16px; backdrop-filter: blur(5px);
-            transition: 0.3s;
+            width: 320px; padding: 18px; background: rgba(0,0,0,0.8); 
+            border: 1px solid #1a1a1a; color: #fff; font-size: 16px;
         }
-        input:focus { border-color: #00bfff; box-shadow: 0 0 15px rgba(0, 191, 255, 0.2); }
 
-        /* Оң жақ астыңғы "БАСТАУ" батырмасы - ЖАҢА ДИЗАЙН */
-        .bottom-right {
-            position: absolute; bottom: 50px; right: 60px;
-            animation: slideInRight 1s ease-out 0.5s both;
+        .btn-box {
+            position: absolute; bottom: 50px; right: 70px;
         }
-        @keyframes slideInRight {
-            from { transform: translateX(100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-        
-        .btn-container { position: relative; display: inline-block; }
-        
+
         .play-btn { 
-            position: relative;
-            padding: 22px 80px; 
-            background: linear-gradient(90deg, #1db954, #19a34a);
-            color: #fff; font-weight: 900; border: none; 
-            cursor: pointer; font-size: 24px; text-transform: uppercase;
-            letter-spacing: 4px; overflow: hidden;
-            transition: 0.2s;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
-            box-shadow: 0 0 25px rgba(29, 185, 84, 0.4);
+            padding: 22px 100px; background: #1db954; color: #fff; 
+            font-weight: 900; border: none; cursor: pointer; font-size: 26px; 
+            text-transform: uppercase; letter-spacing: 5px;
+            clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%);
+            box-shadow: 0 0 30px rgba(29, 185, 84, 0.4);
         }
-
-        .play-btn::after {
-            content: ''; position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
-        }
-
-        .play-btn:hover::after { left: 100%; }
-        
-        .play-btn:active { 
-            transform: scale(0.92); 
-            box-shadow: 0 0 10px rgba(29, 185, 84, 0.6);
-        }
-
-        .btn-glow {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #1db954; filter: blur(30px); opacity: 0.3;
-            z-index: -1;
-        }
-
-        #error { color: #ff3e3e; font-size: 11px; font-weight: bold; margin-top: 8px; display: none; }
     </style>
 </head>
 <body>
     <div id="bg"></div>
+    <div id="canvas-3d"></div>
 
-    <div class="top-left">
-        <div class="ui-label">Авторизация</div>
-        <input type="text" id="nickname" placeholder="NICKNAME_SERVER" maxlength="16">
-        <div id="error">ҚАТЕ ФОРМАТ!</div>
-    </div>
+    <div class="interface">
+        <div class="auth-box">
+            <div class="label">Авторизация</div>
+            <input type="text" id="nick" placeholder="NICKNAME_SERVER">
+        </div>
 
-    <div class="bottom-right">
-        <div class="btn-container">
-            <div class="btn-glow"></div>
-            <button class="play-btn" onclick="connect()">Бастау</button>
+        <div class="btn-box">
+            <button class="play-btn" onclick="go()">Бастау</button>
         </div>
     </div>
 
     <script>
-        window.onload = () => {
-            if (typeof KRP_CORE !== 'undefined' && KRP_CORE.ASSETS.BG_MAIN) {
-                document.getElementById('bg').style.backgroundImage = "url('" + KRP_CORE.ASSETS.BG_MAIN + "')";
-            }
-        };
+        let scene, camera, renderer, model;
 
-        function connect() {
-            const n = document.getElementById('nickname').value;
-            const e = document.getElementById('error');
-            if (/^[a-zA-Z0-9_]+$/.test(n) && n.length > 3) {
-                e.style.display = "none";
-                alert("ЖҮЙЕГЕ ҚОСЫЛУДА: " + n);
-            } else {
-                e.style.display = "block";
-            }
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-3d').appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+            
+            const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+            sunLight.position.set(5, 5, 5);
+            scene.add(sunLight);
+
+            const loader = new THREE.GLTFLoader();
+            loader.load('текстура.glb', function(gltf) {
+                model = gltf.scene;
+                // Модельдің өлшемін және орнын баптау
+                model.scale.set(1.5, 1.5, 1.5);
+                model.position.set(0, -1, -5);
+                scene.add(model);
+                animate();
+            });
+
+            camera.position.z = 5;
         }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if(model) model.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+
+        function go() {
+            const n = document.getElementById('nick').value;
+            if(n.length > 3) alert("Қосылуда: " + n);
+        }
+
+        window.onload = init;
+        window.onresize = () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        };
     </script>
 </body>
 </html>

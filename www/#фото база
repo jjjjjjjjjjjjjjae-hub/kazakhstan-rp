@@ -1,0 +1,5 @@
+const KRP_CORE = {
+    "ASSETS": {
+        "BG_MAIN": "placeholder"
+    }
+};
