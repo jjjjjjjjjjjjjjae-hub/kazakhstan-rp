@@ -2,5 +2,8 @@
   "appId": "com.kazakhstan.rp",
   "appName": "Kazakhstan RP",
   "webDir": "www",
-  "bundledWebRuntime": false
+  "server": {
+    "url": "https://jjjjjjjjjjjjjjae-hub.github.io/kazakhstan-rp/",
+    "cleartext": true
+  }
 }
