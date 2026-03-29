@@ -9,68 +9,103 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
-            overflow: hidden; background: #000; font-family: 'Arial', sans-serif; 
+            overflow: hidden; background: #000; font-family: 'Montserrat', sans-serif; 
         }
 
-        /* Background Animation */
-        @keyframes zoomIn {
-            from { transform: scale(1.2); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        /* Background */
         #bg { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background-size: cover; background-position: center; z-index: -1;
-            animation: zoomIn 1.5s ease-out forwards;
+            filter: brightness(0.8);
         }
 
         /* Сол жақ үстіңгі панель */
         .top-left {
-            position: absolute; top: env(safe-area-inset-top, 20px); left: 40px;
-            animation: slideDown 0.8s ease-out 0.5s both;
+            position: absolute; top: 40px; left: 50px;
+            animation: slideInLeft 0.8s ease-out;
         }
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .label { color: #00bfff; font-size: 14px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase; }
-        input { 
-            width: 280px; padding: 15px; background: rgba(0,0,0,0.8); 
-            border: 2px solid #333; border-radius: 8px; color: #fff; font-size: 16px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-        input:focus { border-color: #00bfff; }
-
-        /* Оң жақ астыңғы панель */
-        .bottom-right {
-            position: absolute; bottom: 40px; right: 60px;
-            animation: slideUp 0.8s ease-out 0.8s both;
-        }
-        @keyframes slideUp {
-            from { transform: translateX(50px); opacity: 0; }
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
-        button { 
-            padding: 18px 70px; background: #28a745; color: #fff;
-            font-weight: 900; border: none; border-radius: 5px;
-            cursor: pointer; font-size: 22px; text-transform: uppercase;
-            box-shadow: 0 8px 0 #1e7e34; transition: 0.1s;
+        .ui-label { 
+            color: #00bfff; font-size: 12px; font-weight: 800; 
+            letter-spacing: 3px; margin-bottom: 10px; text-transform: uppercase;
+            display: flex; align-items: center;
         }
-        button:active { transform: translateY(4px); box-shadow: 0 4px 0 #1e7e34; }
+        .ui-label::before {
+            content: ''; display: inline-block; width: 4px; height: 15px; 
+            background: #00bfff; margin-right: 10px;
+        }
+        input { 
+            width: 320px; padding: 18px; background: rgba(0,0,0,0.6); 
+            border: 1px solid rgba(0, 191, 255, 0.3); border-radius: 2px;
+            color: #fff; font-size: 16px; backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+        input:focus { border-color: #00bfff; box-shadow: 0 0 15px rgba(0, 191, 255, 0.2); }
 
-        #error { color: #ff4d4d; font-size: 12px; margin-top: 5px; display: none; font-weight: bold; }
+        /* Оң жақ астыңғы "БАСТАУ" батырмасы - ЖАҢА ДИЗАЙН */
+        .bottom-right {
+            position: absolute; bottom: 50px; right: 60px;
+            animation: slideInRight 1s ease-out 0.5s both;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .btn-container { position: relative; display: inline-block; }
+        
+        .play-btn { 
+            position: relative;
+            padding: 22px 80px; 
+            background: linear-gradient(90deg, #1db954, #19a34a);
+            color: #fff; font-weight: 900; border: none; 
+            cursor: pointer; font-size: 24px; text-transform: uppercase;
+            letter-spacing: 4px; overflow: hidden;
+            transition: 0.2s;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            box-shadow: 0 0 25px rgba(29, 185, 84, 0.4);
+        }
+
+        .play-btn::after {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .play-btn:hover::after { left: 100%; }
+        
+        .play-btn:active { 
+            transform: scale(0.92); 
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.6);
+        }
+
+        .btn-glow {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #1db954; filter: blur(30px); opacity: 0.3;
+            z-index: -1;
+        }
+
+        #error { color: #ff3e3e; font-size: 11px; font-weight: bold; margin-top: 8px; display: none; }
     </style>
 </head>
 <body>
     <div id="bg"></div>
 
     <div class="top-left">
-        <div class="label">Ойыншы никнеймі</div>
-        <input type="text" id="nickname" placeholder="Nickname_Server" maxlength="16">
+        <div class="ui-label">Авторизация</div>
+        <input type="text" id="nickname" placeholder="NICKNAME_SERVER" maxlength="16">
         <div id="error">ҚАТЕ ФОРМАТ!</div>
     </div>
 
     <div class="bottom-right">
-        <button onclick="go()">БАСТАУ</button>
+        <div class="btn-container">
+            <div class="btn-glow"></div>
+            <button class="play-btn" onclick="connect()">Бастау</button>
+        </div>
     </div>
 
     <script>
@@ -80,12 +115,12 @@
             }
         };
 
-        function go() {
+        function connect() {
             const n = document.getElementById('nickname').value;
             const e = document.getElementById('error');
             if (/^[a-zA-Z0-9_]+$/.test(n) && n.length > 3) {
                 e.style.display = "none";
-                alert("КІРУ: " + n);
+                alert("ЖҮЙЕГЕ ҚОСЫЛУДА: " + n);
             } else {
                 e.style.display = "block";
             }
