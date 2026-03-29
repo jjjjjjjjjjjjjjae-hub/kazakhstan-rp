@@ -6,13 +6,13 @@
     <title>KAZAKHSTAN RP</title>
     <script src="12=88.js"></script>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; outline: none; }
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
             overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; 
         }
 
-        /* 1-ЕРЕЖЕ: Экранды жатық қалыпқа мәжбүрлеу */
+        /* ЕРЕЖЕ 1: Әрқашан жатық қалып (Landscape) */
         @media screen and (orientation: portrait) {
             #portrait-lock { display: flex !important; }
         }
@@ -23,61 +23,57 @@
             justify-content: center; align-items: center; text-align: center;
         }
 
-        /* 3-ЕРЕЖЕ: Кіру анимациясы */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(1.1); }
-            to { opacity: 1; transform: scale(1); }
+        /* ЕРЕЖЕ 3: Анимациялар */
+        @keyframes bgAppear {
+            from { opacity: 0; filter: blur(10px); }
+            to { opacity: 1; filter: blur(0); }
         }
 
-        @keyframes slideRight {
-            from { transform: translateX(-100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes panelSlide {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(-50%); opacity: 1; }
         }
 
         #bg { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background-size: cover; background-position: center; z-index: -1;
-            animation: fadeIn 2s ease-out forwards;
+            animation: bgAppear 1.5s ease-out forwards;
         }
 
         .login-panel {
-            position: absolute; top: 50%; left: 10%;
+            position: absolute; top: 50%; left: 8%;
             transform: translateY(-50%);
-            background: rgba(0,0,0,0.8); padding: 40px;
-            border-radius: 10px; border-left: 6px solid #28a745;
-            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
-            animation: slideRight 1s ease-out 0.5s both;
-            width: 350px;
+            background: rgba(0,0,0,0.85); padding: 35px;
+            border-radius: 4px; border-bottom: 4px solid #00bfff;
+            width: 340px;
+            animation: panelSlide 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67) 0.5s both;
         }
 
-        h2 { color: #fff; margin: 0 0 5px 0; font-size: 24px; }
-        p { color: #28a745; margin: 0 0 20px 0; font-size: 12px; font-weight: bold; }
+        h2 { color: #fff; margin: 0; font-size: 22px; letter-spacing: 1px; }
+        .version { color: #00bfff; font-size: 10px; margin-bottom: 25px; opacity: 0.7; }
 
         input { 
-            width: 100%; padding: 15px; background: #111; border: 1px solid #333;
-            color: #fff; border-radius: 5px; margin-bottom: 20px; font-size: 16px;
-            transition: 0.3s;
+            width: 100%; padding: 14px; background: #0a0a0a; border: 1px solid #222;
+            color: #fff; margin-bottom: 10px; font-size: 15px;
         }
-        input:focus { border-color: #28a745; background: #000; }
 
         button { 
-            width: 100%; padding: 15px; background: #28a745; color: #fff;
-            font-weight: bold; border: none; border-radius: 5px; cursor: pointer;
-            font-size: 16px; text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s;
+            width: 100%; padding: 14px; background: #28a745; color: #fff;
+            font-weight: bold; border: none; cursor: pointer;
+            font-size: 15px; text-transform: uppercase;
+            box-shadow: 0 4px 0 #1e7e34;
         }
-        button:hover { background: #218838; transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
+        button:active { transform: translateY(2px); box-shadow: 0 2px 0 #1e7e34; }
 
-        .error-msg { color: #ff4d4d; font-size: 12px; margin-top: -15px; margin-bottom: 10px; display: none; }
+        #error { color: #ff4d4d; font-size: 11px; margin-bottom: 15px; display: none; }
     </style>
 </head>
 <body>
     <div id="portrait-lock">
         <div>
-            <h1 style="font-size: 50px;">🔄</h1>
+            <h1 style="font-size: 40px;">🔄</h1>
             <h2>ЭКРАНДЫ БҰРЫҢЫЗ</h2>
-            <p>Ойын тек Landscape режимінде жұмыс істейді</p>
+            <p style="font-size: 14px;">Ойын тек Landscape режимінде жұмыс істейді</p>
         </div>
     </div>
 
@@ -85,38 +81,37 @@
 
     <div class="login-panel">
         <h2>KAZAKHSTAN RP</h2>
-        <p>MOBILE EDITION v1.1</p>
+        <div class="version">PROJECT VERSION: 1.2.0 (STABLE)</div>
         
-        <input type="text" id="nickname" placeholder="Мысалы: Rokle_Server" maxlength="20">
-        <div id="error" class="error-msg">Қате формат! (Тек A-Z, 0-9 және _)</div>
+        <input type="text" id="nickname" placeholder="Nickname_Server" maxlength="20">
+        <div id="error">Қате формат!</div>
         
-        <button onclick="checkAndStart()">БАСТАУ</button>
+        <button onclick="startSession()">БАСТАУ</button>
     </div>
 
     <script>
-        window.onload = function() {
+        window.onload = () => {
             if (typeof KRP_CORE !== 'undefined') {
                 document.getElementById('bg').style.backgroundImage = "url('" + KRP_CORE.ASSETS.BG_MAIN + "')";
             }
         };
 
-        function checkAndStart() {
+        function startSession() {
             const nick = document.getElementById('nickname').value;
-            const errorDiv = document.getElementById('error');
+            const error = document.getElementById('error');
             
-            // 2-ЕРЕЖЕ: Никнейм форматын тексеру (стикерлер мен тыныс белгісіне тыйым)
+            // ЕРЕЖЕ 2: Қатаң никнейм тексеру
             const pattern = /^[a-zA-Z0-9_]+$/;
             
-            if (nick.length < 3) {
-                errorDiv.innerText = "Ник тым қысқа!";
-                errorDiv.style.display = "block";
-            } else if (!pattern.test(nick)) {
-                errorDiv.innerText = "Қате формат! (Стикерлерге тыйым салынған)";
-                errorDiv.style.display = "block";
+            if (!pattern.test(nick) || nick.includes(" ")) {
+                error.innerText = "ҚАТЕ: Тек әріп, сан және _ қолданыңыз!";
+                error.style.display = "block";
+            } else if (nick.length < 4) {
+                error.innerText = "ҚАТЕ: Ник өте қысқа!";
+                error.style.display = "block";
             } else {
-                errorDiv.style.display = "none";
-                alert("Қош келдіңіз, " + nick + "! Ойынға кіру...");
-                // Осы жерде серверге қосылу логикасы басталады
+                error.style.display = "none";
+                alert("INITIALIZING SESSION: " + nick);
             }
         }
     </script>

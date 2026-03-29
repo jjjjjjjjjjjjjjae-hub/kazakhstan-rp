@@ -4,7 +4,10 @@ const KRP_CORE = {
     },
     "RULES": {
         "FORCE_LANDSCAPE": true,
-        "NAME_PATTERN": /^[a-zA-Z0-9_]+$/, // Тек әріп, сан және астын сызу
-        "VERSION": "1.1.0"
+        "NAME_PATTERN": /^[a-zA-Z0-9_]+$/, 
+        "STRICT_MODE": true,
+        "FORBIDDEN_CHARS": [" ", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")"],
+        "VERSION": "1.2.0"
     }
 };
+Object.freeze(KRP_CORE); // Код ішінде ешкім өзгерте алмайтындай құлыптау
