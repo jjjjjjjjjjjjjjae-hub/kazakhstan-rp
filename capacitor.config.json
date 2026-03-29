@@ -2,5 +2,14 @@
   "appId": "com.kazakhstan.rp",
   "appName": "Kazakhstan RP",
   "webDir": "www",
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "android": {
+    "allowMixedContent": true,
+    "screenOrientation": "landscape"
+  }
 }
