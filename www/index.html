@@ -1,18 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KAZAKHSTAN RP</title>
     <style>
-        body { background: #000; color: #00ff00; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; font-family: sans-serif; }
-        .loader { border: 5px solid #333; border-top: 5px solid #00ff00; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { 
+            background: #000; color: #fff; font-family: sans-serif; 
+            margin: 0; padding: 0; overflow: hidden; 
+            width: 100vw; height: 100vh;
+        }
+        .game-interface {
+            display: flex; flex-direction: column; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://w.wallhaven.cc/full/2e/wallhaven-2em93y.jpg');
+            background-size: cover;
+        }
+        .hud-top { display: flex; justify-content: space-between; padding: 10px; }
+        .money { color: #2ecc71; font-size: 24px; font-weight: bold; text-shadow: 2px 2px #000; }
+        .location { color: #f1c40f; text-shadow: 1px 1px #000; }
+        .admin-btn { 
+            position: absolute; bottom: 20px; right: 20px; 
+            background: rgba(231, 76, 60, 0.8); border: none; color: white; 
+            padding: 15px; border-radius: 50%; width: 60px; height: 60px;
+        }
     </style>
 </head>
 <body>
-    <div class="loader"></div>
-    <h1 style="margin-top: 20px;">KAZAKHSTAN RP</h1>
-    <p>Ойын файлдары жүктелуде...</p>
+    <div class="game-interface">
+        <div class="hud-top">
+            <div class="location">Қордай ауданы, Сарыбұлақ ауылы</div>
+            <div class="money" id="money">5,000 ₸</div>
+        </div>
+        
+        <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center;">
+            <h2 style="letter-spacing: 5px; text-transform: uppercase;">Kazakhstan RP</h2>
+        </div>
+
+        <button class="admin-btn" onclick="openAdmin()">ADM</button>
+    </div>
+
+    <script src="https://unpkg.com/@capacitor/core@latest/dist/capacitor.js"></script>
+    <script>
+        // Экранды автоматты түрде жатқызу (Landscape)
+        async function lockOrientation() {
+            try {
+                // Бұл жерде Capacitor арқылы экранды бұрамыз
+                if (window.Capacitor && window.Capacitor.Plugins.ScreenOrientation) {
+                    await window.Capacitor.Plugins.ScreenOrientation.lock({ orientation: 'landscape' });
+                }
+            } catch (e) {
+                console.log("Экранды бұру тек телефонда жұмыс істейді");
+            }
+        }
+
+        window.onload = lockOrientation;
+
+        function openAdmin() {
+            const cmd = prompt("Команда енгізіңіз (мысалы: /aksha_1000000):");
+            if(cmd && cmd.startsWith('/aksha_')) {
+                const amount = cmd.split('_')[1];
+                document.getElementById('money').innerText = amount + " ₸";
+                alert("Есепке " + amount + " теңге түсті!");
+            }
+        }
+    </script>
 </body>
 </html>

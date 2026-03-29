@@ -28,7 +28,7 @@ jobs:
 
       - name: Sync and Add Android
         run: |
-          npm install @capacitor/cli @capacitor/android
+          npm install @capacitor/cli @capacitor/android @capacitor/screen-orientation
           npx cap add android || true
           npx cap sync android
 
