@@ -4,62 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>KAZAKHSTAN RP</title>
-    <!-- БАЗАНЫ ЖҮКТЕУ -->
     <script src="12=88.js"></script>
     <style>
+        * { box-sizing: border-box; }
         body, html { 
             margin: 0; padding: 0; width: 100%; height: 100%; 
-            overflow: hidden; background: #000; font-family: sans-serif; 
+            overflow: hidden; background: #000; font-family: 'Segoe UI', sans-serif; 
         }
+
+        /* 1-ЕРЕЖЕ: Экранды жатық қалыпқа мәжбүрлеу */
+        @media screen and (orientation: portrait) {
+            #portrait-lock { display: flex !important; }
+        }
+
+        #portrait-lock {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; color: #00bfff; z-index: 10000;
+            justify-content: center; align-items: center; text-align: center;
+        }
+
+        /* 3-ЕРЕЖЕ: Кіру анимациясы */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(1.1); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideRight {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         #bg { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background-size: cover; background-position: center; z-index: -1;
-            transition: opacity 1s ease-in-out;
+            animation: fadeIn 2s ease-out forwards;
         }
-        .ui { 
-            position: absolute; top: 50%; left: 8%; transform: translateY(-50%); 
-            background: rgba(0,0,0,0.7); padding: 30px; border-radius: 15px;
-            border-left: 4px solid #00bfff;
+
+        .login-panel {
+            position: absolute; top: 50%; left: 10%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.8); padding: 40px;
+            border-radius: 10px; border-left: 6px solid #28a745;
+            box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+            animation: slideRight 1s ease-out 0.5s both;
+            width: 350px;
         }
-        h2 { color: #00bfff; margin: 0 0 10px 0; text-transform: uppercase; }
+
+        h2 { color: #fff; margin: 0 0 5px 0; font-size: 24px; }
+        p { color: #28a745; margin: 0 0 20px 0; font-size: 12px; font-weight: bold; }
+
         input { 
-            padding: 12px; border-radius: 8px; border: 1px solid #333; 
-            width: 260px; background: #111; color: #fff; outline: none;
+            width: 100%; padding: 15px; background: #111; border: 1px solid #333;
+            color: #fff; border-radius: 5px; margin-bottom: 20px; font-size: 16px;
+            transition: 0.3s;
         }
+        input:focus { border-color: #28a745; background: #000; }
+
         button { 
-            margin-top: 15px; padding: 12px 35px; border: none; border-radius: 20px; 
-            background: #28a745; color: white; font-weight: bold; cursor: pointer; 
+            width: 100%; padding: 15px; background: #28a745; color: #fff;
+            font-weight: bold; border: none; border-radius: 5px; cursor: pointer;
+            font-size: 16px; text-transform: uppercase; letter-spacing: 1px;
+            transition: 0.3s;
         }
+        button:hover { background: #218838; transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+
+        .error-msg { color: #ff4d4d; font-size: 12px; margin-top: -15px; margin-bottom: 10px; display: none; }
     </style>
 </head>
 <body>
+    <div id="portrait-lock">
+        <div>
+            <h1 style="font-size: 50px;">🔄</h1>
+            <h2>ЭКРАНДЫ БҰРЫҢЫЗ</h2>
+            <p>Ойын тек Landscape режимінде жұмыс істейді</p>
+        </div>
+    </div>
+
     <div id="bg"></div>
-    <div class="ui">
-        <h2 id="status">ЖҮКТЕЛУДЕ...</h2>
-        <input type="text" id="nick" placeholder="Никнейм...">
-        <br>
-        <button onclick="play()">БАСТАУ</button>
+
+    <div class="login-panel">
+        <h2>KAZAKHSTAN RP</h2>
+        <p>MOBILE EDITION v1.1</p>
+        
+        <input type="text" id="nickname" placeholder="Мысалы: Rokle_Server" maxlength="20">
+        <div id="error" class="error-msg">Қате формат! (Тек A-Z, 0-9 және _)</div>
+        
+        <button onclick="checkAndStart()">БАСТАУ</button>
     </div>
 
     <script>
-        // БАЗАДАН СУРЕТТІ ШЫҒАРУ
         window.onload = function() {
-            setTimeout(() => {
-                if (typeof ASSETS_DB !== 'undefined') {
-                    const bg = document.getElementById('bg');
-                    bg.style.backgroundImage = "url('" + ASSETS_DB.MAIN_BG + "')";
-                    document.getElementById('status').innerText = "ОЙЫНШЫ";
-                    console.log("Assets loaded from 12=88 database");
-                } else {
-                    document.getElementById('status').innerText = "ҚАТЕ: БАЗА ЖОҚ";
-                }
-            }, 500);
+            if (typeof KRP_CORE !== 'undefined') {
+                document.getElementById('bg').style.backgroundImage = "url('" + KRP_CORE.ASSETS.BG_MAIN + "')";
+            }
         };
 
-        function play() {
-            const n = document.getElementById('nick').value;
-            if(n.length > 2) alert('Қош келдіңіз, ' + n + '!');
-            else alert('Ник жазыңыз!');
+        function checkAndStart() {
+            const nick = document.getElementById('nickname').value;
+            const errorDiv = document.getElementById('error');
+            
+            // 2-ЕРЕЖЕ: Никнейм форматын тексеру (стикерлер мен тыныс белгісіне тыйым)
+            const pattern = /^[a-zA-Z0-9_]+$/;
+            
+            if (nick.length < 3) {
+                errorDiv.innerText = "Ник тым қысқа!";
+                errorDiv.style.display = "block";
+            } else if (!pattern.test(nick)) {
+                errorDiv.innerText = "Қате формат! (Стикерлерге тыйым салынған)";
+                errorDiv.style.display = "block";
+            } else {
+                errorDiv.style.display = "none";
+                alert("Қош келдіңіз, " + nick + "! Ойынға кіру...");
+                // Осы жерде серверге қосылу логикасы басталады
+            }
         }
     </script>
 </body>
