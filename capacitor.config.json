@@ -4,6 +4,7 @@
   "webDir": "www",
   "server": {
     "url": "https://jjjjjjjjjjjjjjae-hub.github.io/kazakhstan-rp/",
-    "cleartext": true
+    "cleartext": true,
+    "allowNavigation": ["*"]
   }
 }
