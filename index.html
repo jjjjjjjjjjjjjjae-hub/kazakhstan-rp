@@ -1,13 +1,63 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>kazakhstan-rp</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>KAZAKHSTAN RP - ALMAS</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: sans-serif; }
+        #bg-image { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: url('фото.png'); background-size: cover; background-position: center; z-index: -1; filter: brightness(0.6); }
+        #canvas-3d { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .ui { position: relative; width: 100%; height: 100%; z-index: 10; }
+        .auth { position: absolute; top: 40px; left: 50px; }
+        .label { color: #00bfff; font-size: 14px; font-weight: 900; letter-spacing: 3px; border-left: 4px solid #00bfff; padding-left: 12px; margin-bottom: 8px; }
+        input { width: 300px; padding: 18px; background: rgba(0,0,0,0.8); border: 1px solid #333; color: #fff; border-radius: 4px; pointer-events: auto; }
+        .btn-container { position: absolute; bottom: 50px; right: 70px; }
+        .play-btn { padding: 22px 100px; background: #1db954; color: #fff; font-weight: 900; border: none; font-size: 24px; clip-path: polygon(15% 0, 100% 0, 85% 100%, 0% 100%); pointer-events: auto; }
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; display: flex; justify-content: center; align-items: center; color: #00bfff; }
+    </style>
+</head>
+<body>
+    <div id="loader">ЖҮКТЕЛУДЕ...</div>
+    <div id="bg-image"></div>
+    <div id="canvas-3d"></div>
+    <div class="ui">
+        <div class="auth">
+            <div class="label">ОЙЫНШЫ</div>
+            <input type="text" id="nick" value="Алмас">
+        </div>
+        <div class="btn-container">
+            <button class="play-btn" onclick="alert('Кіру...')">БАСТАУ</button>
+        </div>
+    </div>
+    <script>
+        let scene, camera, renderer, model;
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-3d').appendChild(renderer.domElement);
+            scene.add(new THREE.AmbientLight(0xffffff, 1));
+            new THREE.GLTFLoader().load('текстура.glb', (gltf) => {
+                model = gltf.scene;
+                model.scale.set(2, 2, 2);
+                model.position.set(0, -1, -5);
+                scene.add(model);
+                document.getElementById('loader').style.display = 'none';
+                animate();
+            }, undefined, () => document.getElementById('loader').style.display = 'none');
+            camera.position.z = 5;
+        }
+        function animate() {
+            requestAnimationFrame(animate);
+            if(model) model.rotation.y += 0.007;
+            renderer.render(scene, camera);
+        }
+        window.onload = init;
+    </script>
+</body>
 </html>
